@@ -18,7 +18,7 @@ To enable interpolation on a node, simply call the static method <code>Interpola
 The method returns an <code>InterpolationConfig</code> object which can be used to further control how the node gets interpolated.<br>
 
 By default, both position and rotation will be interpolated. You can change this by overriding the default parameters when adding a node:
-<code>Interpolator.Add(Node3D node, bool interpolatePosition = true, bool interpolateRotation = true, bool discardNonInterpolatedProperties = false)</code>
+<code>Interpolation.Add(Node3D node, bool interpolatePosition = true, bool interpolateRotation = true, bool discardNonInterpolatedProperties = false)</code>
 
 <code>InterpolationConfig.DiscardNonInterpolatedProperties</code> will determine if the non-interpolated properties of a node will inherit those of its parent.
 
