@@ -138,7 +138,7 @@ public partial class Interpolation : Node3D
             }
             else if (!config.DiscardNonInterpolatedProperties)
             {
-                newTransform.Origin = config.CurrentTransform.Origin;
+                newTransform.Origin = parent.GlobalPosition;
             }
 
             if (config.InterpolateRotation)
@@ -147,7 +147,7 @@ public partial class Interpolation : Node3D
             }
             else if (!config.DiscardNonInterpolatedProperties)
             {
-                newTransform.Basis = config.CurrentTransform.Basis;
+                newTransform.Basis = parent.GlobalTransform.Basis;
             }
 
             node.GlobalTransform = newTransform;
