@@ -1,6 +1,6 @@
 # Godot 4.1 Physics Interpolation
 
-A simple, flexible solution for interpolating transforms in c#.
+A simple, flexible C# solution for interpolating transforms in Godot 4.1.
 
 Installation:
 
