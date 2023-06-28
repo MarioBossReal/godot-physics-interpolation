@@ -47,10 +47,8 @@ public partial class Interpolation : Node3D
             config.DiscardNonInterpolatedProperties = discardNonInterpolatedProperties;
         }
 
-        config.InterpolatedPosition = parent.GlobalPosition;
-        config.InterpolatedQuaternion = parent.Quaternion.Normalized();
-        config.FrameStartPosition = parent.GlobalPosition;
-        config.FrameStartQuaternion = parent.Quaternion.Normalized();
+        config.PreviousTransform = parent.GlobalTransform;
+        config.CurrentTransform = parent.GlobalTransform;
 
         node.TopLevel = true;
         return config;
@@ -94,8 +92,8 @@ public partial class Interpolation : Node3D
             if (parent == null)
                 continue;
 
-            config.FrameStartPosition = parent.GlobalPosition;
-            config.FrameStartQuaternion = parent.Quaternion.Normalized();
+            config.PreviousTransform = config.CurrentTransform;
+            config.CurrentTransform = parent.GlobalTransform;
         }
     }
 
@@ -116,20 +114,18 @@ public partial class Interpolation : Node3D
             if (parent == null)
                 continue;
 
+            Transform3D newTransform = node.GlobalTransform;
+
             if (config.DisableNextFrame)
             {
                 if (config.InterpolatePosition || !config.DiscardNonInterpolatedProperties)
                 {
-                    node.GlobalPosition = parent.GlobalPosition;
-                    config.FrameStartPosition = parent.GlobalPosition;
-                    config.InterpolatedPosition = parent.GlobalPosition;
+                    newTransform.Origin = config.CurrentTransform.Origin;
                 }
 
                 if (config.InterpolateRotation || !config.DiscardNonInterpolatedProperties)
                 {
-                    node.GlobalRotation = parent.GlobalRotation;
-                    config.InterpolatedQuaternion = parent.Quaternion.Normalized();
-                    config.FrameStartQuaternion = parent.Quaternion.Normalized();
+                    newTransform.Basis = config.CurrentTransform.Basis;
                 }
 
                 config.DisableNextFrame = false;
@@ -138,27 +134,23 @@ public partial class Interpolation : Node3D
 
             if (config.InterpolatePosition)
             {
-                config.InterpolatedPosition = config.FrameStartPosition.Lerp(parent.GlobalPosition, (float)fraction);
-                node.GlobalPosition = config.InterpolatedPosition;
+                newTransform.Origin = config.PreviousTransform.Origin.Lerp(config.CurrentTransform.Origin, (float)fraction);
             }
             else if (!config.DiscardNonInterpolatedProperties)
             {
-                node.GlobalPosition = parent.GlobalPosition;
-                config.InterpolatedPosition = parent.GlobalPosition;
-                config.FrameStartPosition = parent.GlobalPosition;
+                newTransform.Origin = config.CurrentTransform.Origin;
             }
 
             if (config.InterpolateRotation)
             {
-                config.InterpolatedQuaternion = config.FrameStartQuaternion.Slerp(parent.Quaternion, (float)fraction).Normalized();
-                node.Quaternion = config.InterpolatedQuaternion;
+                newTransform.Basis = config.PreviousTransform.Basis.Slerp(config.CurrentTransform.Basis, (float)fraction);
             }
             else if (!config.DiscardNonInterpolatedProperties)
             {
-                node.GlobalRotation = parent.GlobalRotation;
-                config.InterpolatedQuaternion = parent.Quaternion.Normalized();
-                config.FrameStartQuaternion = parent.Quaternion.Normalized();
+                newTransform.Basis = config.CurrentTransform.Basis;
             }
+
+            node.GlobalTransform = newTransform;
         }
     }
 }
