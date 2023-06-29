@@ -120,13 +120,16 @@ public partial class Interpolation : Node3D
             {
                 if (config.InterpolatePosition || !config.DiscardNonInterpolatedProperties)
                 {
-                    newTransform.Origin = config.CurrentTransform.Origin;
+                    newTransform.Origin = parent.GlobalPosition;
                 }
 
                 if (config.InterpolateRotation || !config.DiscardNonInterpolatedProperties)
                 {
-                    newTransform.Basis = config.CurrentTransform.Basis;
+                    newTransform.Basis = parent.GlobalTransform.Basis;
                 }
+
+                config.CurrentTransform = parent.GlobalTransform;
+                config.PreviousTransform = parent.GlobalTransform;
 
                 config.DisableNextFrame = false;
                 continue;
