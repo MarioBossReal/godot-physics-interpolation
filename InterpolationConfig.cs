@@ -9,7 +9,7 @@ public class InterpolationConfig
 
     public bool InterpolatePosition { get; set; }
     public bool InterpolateRotation { get; set; }
-    public bool DisableNextFrame { get; set; }
+    public bool DisabledNextFrame { get; set; }
     public bool DiscardNonInterpolatedProperties { get; set; }
 
     public InterpolationConfig(Node3D node, bool interpolatePosition = true, bool interpolateRotation = true, bool discardNonInterpolatedProperties = false)
@@ -18,6 +18,11 @@ public class InterpolationConfig
         InterpolatePosition = interpolatePosition;
         InterpolateRotation = interpolateRotation;
         DiscardNonInterpolatedProperties = discardNonInterpolatedProperties;
-        DisableNextFrame = false;
+        DisabledNextFrame = false;
+    }
+
+    public void DisableNextFrame()
+    {
+        DisabledNextFrame = true;
     }
 }
