@@ -1,4 +1,5 @@
 using Godot;
+using System;
 using System.Collections.Generic;
 
 public partial class Interpolation : Node3D
@@ -31,14 +32,13 @@ public partial class Interpolation : Node3D
         if (parent == null)
             return null;
 
-        InterpolationConfig config;
-
-        config = Get(node);
+        var config = Get(node);
 
         if (config == null)
         {
             config = new InterpolationConfig(node, interpolatePosition, interpolateRotation, discardNonInterpolatedProperties);
             Instance._interpolatedObjects.Add(node, config);
+            node.TreeExited += () => Remove(node);
         }
         else
         {
@@ -49,8 +49,8 @@ public partial class Interpolation : Node3D
 
         config.PreviousTransform = parent.GlobalTransform;
         config.CurrentTransform = parent.GlobalTransform;
-
         node.TopLevel = true;
+
         return config;
     }
 
@@ -81,13 +81,13 @@ public partial class Interpolation : Node3D
     {
         foreach (var pair in _interpolatedObjects)
         {
-            InterpolationConfig config = pair.Value;
-            Node3D node = config.Node;
+            var config = pair.Value;
+            var node = config.Node;
 
             if (node == null)
                 continue;
 
-            Node3D parent = config.Node.GetParent<Node3D>();
+            var parent = config.Node.GetParent<Node3D>();
 
             if (parent == null)
                 continue;
@@ -103,20 +103,20 @@ public partial class Interpolation : Node3D
 
         foreach (var pair in _interpolatedObjects)
         {
-            InterpolationConfig config = pair.Value;
-            Node3D node = config.Node;
+            var config = pair.Value;
+            var node = config.Node;
 
             if (node == null)
                 continue;
 
-            Node3D parent = config.Node.GetParent<Node3D>();
+            var parent = config.Node.GetParent<Node3D>();
 
             if (parent == null)
                 continue;
 
-            Transform3D newTransform = node.GlobalTransform;
+            var newTransform = node.GlobalTransform;
 
-            if (config.DisableNextFrame)
+            if (config.DisabledNextFrame)
             {
                 if (config.InterpolatePosition || !config.DiscardNonInterpolatedProperties)
                 {
@@ -128,10 +128,10 @@ public partial class Interpolation : Node3D
                     newTransform.Basis = parent.GlobalTransform.Basis;
                 }
 
-                config.CurrentTransform = parent.GlobalTransform;
-                config.PreviousTransform = parent.GlobalTransform;
+                config.CurrentTransform = newTransform;
+                config.PreviousTransform = newTransform;
+                config.DisabledNextFrame = false;
 
-                config.DisableNextFrame = false;
                 continue;
             }
 
