@@ -4,7 +4,7 @@ using System;
 public partial class BasicInterpolater : Node3D
 {
     [Export]
-    private bool InterpolatePosition {  get; set; }
+    private bool InterpolatePosition { get; set; }
 
     [Export]
     private bool InterpolateRotation { get; set; }
