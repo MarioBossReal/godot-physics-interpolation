@@ -101,6 +101,8 @@ public partial class Interpolation : Node3D
     {
         double fraction = Engine.GetPhysicsInterpolationFraction();
 
+        fraction = Mathf.Clamp(fraction, 0.0, 1.0);
+
         foreach (var pair in _interpolatedObjects)
         {
             var config = pair.Value;
