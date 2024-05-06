@@ -12,7 +12,7 @@ public partial class Interpolation : Node3D
     {
         Instance ??= this;
         _interpolatedObjects = new();
-        ProcessPhysicsPriority = -1000;
+        ProcessPhysicsPriority = 1000;
         ProcessPriority = 1000;
     }
 
